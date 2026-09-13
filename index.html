@@ -96,29 +96,12 @@
 
   <div class="panel">
     <div class="setup-toggle" id="setupToggle">
-      <span class="panel-label" style="margin:0;">Google Sheets connection</span>
+      <span class="panel-label" style="margin:0;">Attendance System</span>
       <span id="setupArrow">▾</span>
     </div>
     <div class="setup-body" id="setupBody">
-      <p>To save attendance directly into your own Google Sheet, connect it once below. This is a one-time setup per browser/device.</p>
-      <ol>
-        <li>Create a Google Sheet with a first row of headers: <em>Date, Student Name, Time In, Time Out, Batch, Instrument</em>. Copy its ID from the URL (the long string between <em>/d/</em> and <em>/edit</em>).</li>
-        <li>In Google Cloud Console, enable the "Google Sheets API", then create an OAuth 2.0 Client ID (type: Web application) and add this page's exact web address under "Authorized JavaScript origins".</li>
-        <li>Paste the Client ID and Sheet ID below, then click Connect Google Account.</li>
-      </ol>
-      <div class="field-row">
-        <div style="flex:2; min-width:220px;">
-          <label class="small">Google OAuth Client ID</label>
-          <input type="text" id="clientIdInput" placeholder="xxxxxxxx.apps.googleusercontent.com">
-        </div>
-        <div style="flex:1; min-width:180px;">
-          <label class="small">Google Sheet ID</label>
-          <input type="text" id="sheetIdInput" placeholder="1BxiMV...">
-        </div>
-      </div>
-      <button class="btn" id="saveSettingsBtn">Save settings</button>
-      <button class="btn ghost" id="connectBtn">Connect Google Account</button>
-      <div class="conn-status" id="connStatus">Not connected — attendance will still be recorded here and can be exported as CSV.</div>
+      <p>Staff attendance is connected to the SOHMI central attendance system.</p>
+      <div class="conn-status ok" id="connStatus">Connecting to student database…</div>
     </div>
   </div>
 
@@ -126,23 +109,25 @@
     <div class="panel-label">Log attendance</div>
     <div class="form-grid">
       <div>
-        <label class="small">Student name</label>
-        <input type="text" id="studentName" placeholder="e.g. Aarav Sharma">
-      </div>
-      <div>
-        <label class="small">Instrument</label>
-        <select id="instrument">
-          <option>Piano</option><option>Guitar</option><option>Violin</option>
-          <option>Drums</option><option>Vocals</option><option>Keyboard</option>
-          <option>Bass</option><option>Other</option>
+        <label class="small">Student</label>
+        <select id="studentSelect">
+          <option value="">Loading students…</option>
         </select>
       </div>
       <div>
-        <label class="small">Batch</label>
-        <select id="batch"></select>
+        <label class="small">Instrument</label>
+        <input type="text" id="instrument" readonly placeholder="Select a student">
       </div>
       <div>
-        <button class="btn" id="checkInBtn">Check In</button>
+        <label class="small">Batch</label>
+        <input type="text" id="batch" readonly placeholder="Select a student">
+      </div>
+      <div>
+        <label class="small">Teacher</label>
+        <input type="text" id="teacher" readonly placeholder="Select a student">
+      </div>
+      <div>
+        <button class="btn" id="checkInBtn" disabled>Check In</button>
       </div>
     </div>
   </div>
@@ -164,174 +149,275 @@
 </div>
 
 <script>
-const SHEET_COLUMNS = ['Date','Student Name','Time In','Time Out','Batch','Instrument'];
-let records = []; // {date, name, timeIn, timeOut, batch, instrument, sheetRow}
-let clientId = '';
-let sheetId = '';
-let accessToken = null;
-let tokenClient = null;
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbynuYM1UzLAG2D9Z1THJN-ZhP9jgZoWd6HFtUuQ0h3-E3tS_yTl808RRH76c9qirnhZLg/exec';
+
+let records = [];
+let students = [];
+let backendReady = false;
 
 function todayInfo(){
   const now = new Date();
-  const day = now.getDay(); // 0 Sun ... 6 Sat
+  const day = now.getDay();
   const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   let batches = [];
   let hours = '';
-  if(day===0){ hours='Closed'; }
-  else if(day===6){ batches=['2:00–3:00 PM','3:00–4:00 PM','4:00–5:00 PM']; hours='2:00 PM – 5:00 PM'; }
-  else { batches=['2:00–3:00 PM','3:00–4:00 PM','4:00–5:00 PM','5:00–6:00 PM','6:00–7:00 PM']; hours='2:00 PM – 7:00 PM'; }
-  return { dayName: dayNames[day], batches, hours, isOpen: day!==0, dateStr: now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) };
+
+  if(day === 0){
+    hours = 'Closed';
+  } else if(day === 6){
+    batches = ['2:00–3:00 PM','3:00–4:00 PM','4:00–5:00 PM'];
+    hours = '2:00 PM – 5:00 PM';
+  } else {
+    batches = ['2:00–3:00 PM','3:00–4:00 PM','4:00–5:00 PM','5:00–6:00 PM','6:00–7:00 PM'];
+    hours = '2:00 PM – 7:00 PM';
+  }
+
+  return {
+    dayName: dayNames[day],
+    batches,
+    hours,
+    isOpen: day !== 0,
+    dateStr: now.toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'})
+  };
 }
 
 function renderStatus(){
   const info = todayInfo();
   document.getElementById('dayLabel').textContent = info.dayName + ' · ' + info.dateStr;
   document.getElementById('hoursLabel').textContent = info.hours;
+
   const pill = document.getElementById('openPill');
   pill.textContent = info.isOpen ? 'Open today' : 'Closed today';
   pill.className = 'pill ' + (info.isOpen ? 'open' : 'closed');
 
-  const batchSel = document.getElementById('batch');
-  batchSel.innerHTML = '';
-  info.batches.forEach(b=>{
-    const o = document.createElement('option'); o.textContent=b; batchSel.appendChild(o);
-  });
   document.getElementById('entryPanel').style.display = info.isOpen ? 'block' : 'none';
 }
 
 function nowTimeStr(){
-  return new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
-}
-
-function renderTable(){
-  const tbody = document.getElementById('tableBody');
-  tbody.innerHTML = '';
-  if(records.length===0){
-    tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No attendance logged yet today.</td></tr>';
-    return;
-  }
-  records.forEach((r, i)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${r.name}</td><td>${r.instrument}</td><td>${r.batch}</td><td>${r.timeIn}</td>
-      <td class="${r.timeOut ? '' : 'muted'}">${r.timeOut || '—'}</td>
-      <td>${r.timeOut ? '' : `<button class="btn ghost small" data-i="${i}">Check Out</button>`}</td>`;
-    tbody.appendChild(tr);
-  });
-  tbody.querySelectorAll('button[data-i]').forEach(b=>{
-    b.onclick = ()=> checkOut(Number(b.dataset.i));
+  return new Date().toLocaleTimeString('en-US', {
+    hour:'numeric',
+    minute:'2-digit',
+    hour12:true
   });
 }
 
-async function checkIn(){
-  const name = document.getElementById('studentName').value.trim();
-  if(!name){ alert('Please enter the student\u2019s name.'); return; }
-  const instrument = document.getElementById('instrument').value;
-  const batch = document.getElementById('batch').value;
-  const info = todayInfo();
-  const record = { date: info.dateStr, name, timeIn: nowTimeStr(), timeOut: '', batch, instrument, sheetRow: null };
-  records.push(record);
-  renderTable();
-  document.getElementById('studentName').value = '';
-
-  if(accessToken && sheetId){
-    try{
-      const row = await sheetsAppend([record.date, record.name, record.timeIn, record.timeOut, record.batch, record.instrument]);
-      record.sheetRow = row;
-    }catch(e){ console.error(e); setConnStatus('Could not write to sheet — check connection.', false); }
-  }
-}
-
-async function checkOut(i){
-  records[i].timeOut = nowTimeStr();
-  renderTable();
-  if(accessToken && sheetId && records[i].sheetRow){
-    try{ await sheetsUpdateCell(records[i].sheetRow, 'D', records[i].timeOut); }
-    catch(e){ console.error(e); setConnStatus('Could not update sheet — check connection.', false); }
-  }
-}
-
-function exportCSV(){
-  const rows = [SHEET_COLUMNS, ...records.map(r=>[r.date,r.name,r.timeIn,r.timeOut,r.batch,r.instrument])];
-  const csv = rows.map(r=> r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob = new Blob([csv], {type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `attendance-${todayInfo().dateStr.replace(/\s/g,'-')}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-// ---------- Google Sheets sync ----------
 function setConnStatus(msg, ok){
   const el = document.getElementById('connStatus');
   el.textContent = msg;
   el.className = 'conn-status ' + (ok ? 'ok' : 'warn');
 }
 
-function saveSettings(){
-  clientId = document.getElementById('clientIdInput').value.trim();
-  sheetId = document.getElementById('sheetIdInput').value.trim();
-  if(!clientId || !sheetId){ setConnStatus('Enter both a Client ID and a Sheet ID.', false); return; }
-  try{
-    tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: clientId,
-      scope: 'https://www.googleapis.com/auth/spreadsheets',
-      callback: (resp)=>{
-        if(resp.access_token){
-          accessToken = resp.access_token;
-          setConnStatus('Connected — attendance will save to your Google Sheet.', true);
-        }
-      }
+function renderStudentOptions(){
+  const select = document.getElementById('studentSelect');
+  select.innerHTML = '';
+
+  const first = document.createElement('option');
+  first.value = '';
+  first.textContent = students.length ? 'Select a student' : 'No active students found';
+  select.appendChild(first);
+
+  students
+    .filter(s => String(s.status).toLowerCase() !== 'inactive')
+    .sort((a,b) => a.studentName.localeCompare(b.studentName))
+    .forEach(student => {
+      const option = document.createElement('option');
+      option.value = student.studentId;
+      option.textContent = student.studentName;
+      select.appendChild(option);
     });
-    setConnStatus('Settings saved. Click "Connect Google Account" to authorize.', true);
-  }catch(e){
-    setConnStatus('Could not initialize Google sign-in. Check the Client ID.', false);
+}
+
+function selectedStudent(){
+  const id = document.getElementById('studentSelect').value;
+  return students.find(s => s.studentId === id) || null;
+}
+
+function updateStudentDetails(){
+  const student = selectedStudent();
+
+  document.getElementById('instrument').value = student ? student.instrument : '';
+  document.getElementById('batch').value = student ? student.batch : '';
+  document.getElementById('teacher').value = student ? student.teacher : '';
+
+  const btn = document.getElementById('checkInBtn');
+  btn.disabled = !student || !backendReady;
+}
+
+function renderTable(){
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+
+  if(records.length === 0){
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No attendance logged yet today.</td></tr>';
+    return;
+  }
+
+  records.forEach((r, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.name}</td>
+      <td>${r.instrument}</td>
+      <td>${r.batch}</td>
+      <td>${r.timeIn}</td>
+      <td class="${r.timeOut ? '' : 'muted'}">${r.timeOut || '—'}</td>
+      <td>${r.timeOut ? '' : `<button class="btn ghost small" data-i="${i}">Check Out</button>`}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll('button[data-i]').forEach(b => {
+    b.onclick = () => checkOut(Number(b.dataset.i));
+  });
+}
+
+async function loadStudents(){
+  try {
+    setConnStatus('Connecting to student database…', false);
+
+    const res = await fetch(BACKEND_URL + '?action=students', { cache: 'no-store' });
+    if(!res.ok) throw new Error('Backend returned ' + res.status);
+
+    const data = await res.json();
+    if(!data.success) throw new Error(data.error || 'Could not load students.');
+
+    students = Array.isArray(data.students) ? data.students : [];
+    backendReady = true;
+
+    renderStudentOptions();
+    updateStudentDetails();
+
+    setConnStatus(
+      students.length
+        ? 'Connected — ' + students.length + ' student' + (students.length === 1 ? '' : 's') + ' available.'
+        : 'Connected — no students have been added yet.',
+      true
+    );
+  } catch(e) {
+    console.error(e);
+    backendReady = false;
+    setConnStatus('Could not connect to the SOHMI attendance system. Please refresh the page.', false);
+    document.getElementById('checkInBtn').disabled = true;
   }
 }
 
-function connectGoogle(){
-  if(!tokenClient){ setConnStatus('Save settings first.', false); return; }
-  tokenClient.requestAccessToken();
+async function checkIn(){
+  const student = selectedStudent();
+  if(!student) {
+    alert('Please select a student.');
+    return;
+  }
+
+  const info = todayInfo();
+  const record = {
+    date: info.dateStr,
+    studentId: student.studentId,
+    name: student.studentName,
+    instrument: student.instrument,
+    batch: student.batch,
+    teacher: student.teacher,
+    timeIn: nowTimeStr(),
+    timeOut: '',
+    sheetRow: null
+  };
+
+  const btn = document.getElementById('checkInBtn');
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'checkIn',
+        date: record.date,
+        studentId: record.studentId,
+        studentName: record.name,
+        instrument: record.instrument,
+        batch: record.batch,
+        teacher: record.teacher,
+        timeIn: record.timeIn
+      })
+    });
+
+    const data = await res.json();
+    if(!data.success) throw new Error(data.error || 'Could not save attendance.');
+
+    record.sheetRow = data.row || null;
+    records.push(record);
+    renderTable();
+
+    document.getElementById('studentSelect').value = '';
+    updateStudentDetails();
+    setConnStatus('Attendance saved successfully.', true);
+  } catch(e) {
+    console.error(e);
+    setConnStatus('Could not save attendance. Please try again.', false);
+    alert('Attendance could not be saved. Please try again.');
+    updateStudentDetails();
+  }
 }
 
-async function sheetsAppend(rowValues){
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/A:F:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
-  const res = await fetch(url, {
-    method:'POST',
-    headers:{ 'Authorization':'Bearer '+accessToken, 'Content-Type':'application/json' },
-    body: JSON.stringify({ values:[rowValues] })
-  });
-  if(!res.ok) throw new Error('Sheets append failed: '+res.status);
-  const data = await res.json();
-  const range = data.updates && data.updates.updatedRange; // e.g. "Sheet1!A5:F5"
-  const m = range && range.match(/(\d+)(?::|$)/);
-  return m ? Number(m[1]) : null;
+async function checkOut(i){
+  const record = records[i];
+  if(!record) return;
+
+  const timeOut = nowTimeStr();
+
+  try {
+    const res = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'checkOut',
+        row: record.sheetRow,
+        timeOut: timeOut
+      })
+    });
+
+    const data = await res.json();
+    if(!data.success) throw new Error(data.error || 'Could not save check out.');
+
+    record.timeOut = timeOut;
+    renderTable();
+    setConnStatus('Check out saved successfully.', true);
+  } catch(e) {
+    console.error(e);
+    setConnStatus('Could not save check out. Please try again.', false);
+    alert('Check out could not be saved. Please try again.');
+  }
 }
 
-async function sheetsUpdateCell(row, col, value){
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${col}${row}?valueInputOption=USER_ENTERED`;
-  const res = await fetch(url, {
-    method:'PUT',
-    headers:{ 'Authorization':'Bearer '+accessToken, 'Content-Type':'application/json' },
-    body: JSON.stringify({ values:[[value]] })
-  });
-  if(!res.ok) throw new Error('Sheets update failed: '+res.status);
+function exportCSV(){
+  const rows = [
+    ['Date','Student ID','Student Name','Instrument','Batch','Teacher','Time In','Time Out'],
+    ...records.map(r => [r.date,r.studentId,r.name,r.instrument,r.batch,r.teacher,r.timeIn,r.timeOut])
+  ];
+
+  const csv = rows
+    .map(r => r.map(v => `"${String(v ?? '').replace(/"/g,'""')}"`).join(','))
+    .join('\n');
+
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `attendance-${todayInfo().dateStr.replace(/\s/g,'-')}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
-// ---------- wiring ----------
-document.getElementById('setupToggle').onclick = ()=>{
+document.getElementById('setupToggle').onclick = () => {
   const body = document.getElementById('setupBody');
   const arrow = document.getElementById('setupArrow');
   body.classList.toggle('show');
   arrow.textContent = body.classList.contains('show') ? '▴' : '▾';
 };
-document.getElementById('saveSettingsBtn').onclick = saveSettings;
-document.getElementById('connectBtn').onclick = connectGoogle;
+
+document.getElementById('studentSelect').onchange = updateStudentDetails;
 document.getElementById('checkInBtn').onclick = checkIn;
 document.getElementById('exportBtn').onclick = exportCSV;
 
 renderStatus();
 renderTable();
+loadStudents();
 </script>
 </body>
 </html>
