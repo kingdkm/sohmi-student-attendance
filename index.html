@@ -75,6 +75,13 @@
 
   .top-actions{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px; }
 
+
+  .lesson-card{ background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px 16px; margin-bottom:18px; display:none; }
+  .lesson-title{ font-family:'Fraunces',serif; font-size:22px; margin:0 0 8px; }
+  .lesson-meta{ color:var(--gold); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.3px; margin-bottom:6px; }
+  .lesson-section{ margin-top:14px; }
+  .lesson-section strong{ display:block; color:var(--ivory-dim); font-size:12px; text-transform:uppercase; letter-spacing:.3px; margin-bottom:5px; }
+  .lesson-section p{ margin:0; color:var(--ivory); font-size:14px; line-height:1.6; }
   footer{ margin-top:20px; color:var(--ivory-dim); font-size:12px; line-height:1.6; text-align:center; }
 </style>
 </head>
@@ -132,6 +139,24 @@
     </div>
   </div>
 
+
+  <div class="lesson-card" id="lessonCard">
+    <div class="lesson-meta" id="lessonMeta">Current Lesson</div>
+    <h2 class="lesson-title" id="lessonTitle">Loading lesson…</h2>
+    <div class="lesson-section">
+      <strong>Teacher Instructions</strong>
+      <p id="lessonInstructions"></p>
+    </div>
+    <div class="lesson-section">
+      <strong>Practice</strong>
+      <p id="lessonPractice"></p>
+    </div>
+    <div class="lesson-section">
+      <strong>Assignment / Homework</strong>
+      <p id="lessonHomework"></p>
+    </div>
+  </div>
+
   <div class="panel">
     <div class="top-actions">
       <div class="panel-label" style="margin:0;">Today's attendance</div>
@@ -154,6 +179,7 @@ const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbynuYM1UzLAG2D9Z1TH
 let records = [];
 let students = [];
 let backendReady = false;
+let currentLessonStudentId = '';
 
 function todayInfo(){
   const now = new Date();
@@ -241,6 +267,45 @@ function updateStudentDetails(){
 
   const btn = document.getElementById('checkInBtn');
   btn.disabled = !student || !backendReady;
+}
+
+
+async function loadCurrentLesson(studentId){
+  const card = document.getElementById('lessonCard');
+  if(!studentId){
+    card.style.display = 'none';
+    currentLessonStudentId = '';
+    return;
+  }
+
+  currentLessonStudentId = studentId;
+  card.style.display = 'block';
+  document.getElementById('lessonMeta').textContent = 'Current Lesson';
+  document.getElementById('lessonTitle').textContent = 'Loading lesson…';
+  document.getElementById('lessonInstructions').textContent = '';
+  document.getElementById('lessonPractice').textContent = '';
+  document.getElementById('lessonHomework').textContent = '';
+
+  try {
+    const url = BACKEND_URL + '?action=getCurrentLesson&studentId=' + encodeURIComponent(studentId);
+    const res = await fetch(url, { cache: 'no-store' });
+    if(!res.ok) throw new Error('Backend returned ' + res.status);
+
+    const data = await res.json();
+    if(!data.success) throw new Error(data.error || 'Could not load current lesson.');
+
+    document.getElementById('lessonMeta').textContent = 'Lesson ' + data.lessonNo + ' · Week ' + data.week + ' · Age ' + data.ageGroup;
+    document.getElementById('lessonTitle').textContent = data.topic || 'Lesson ' + data.lessonNo;
+    document.getElementById('lessonInstructions').textContent = data.instructions || 'No instructions added.';
+    document.getElementById('lessonPractice').textContent = data.practice || 'No practice added.';
+    document.getElementById('lessonHomework').textContent = data.homework || 'No assignment added.';
+  } catch(e) {
+    console.error(e);
+    document.getElementById('lessonTitle').textContent = 'Could not load lesson';
+    document.getElementById('lessonInstructions').textContent = 'Please refresh and try again.';
+    document.getElementById('lessonPractice').textContent = '';
+    document.getElementById('lessonHomework').textContent = '';
+  }
 }
 
 function renderTable(){
@@ -343,6 +408,7 @@ async function checkIn(){
     record.sheetRow = data.row || null;
     records.push(record);
     renderTable();
+    await loadCurrentLesson(student.studentId);
 
     document.getElementById('studentSelect').value = '';
     updateStudentDetails();
