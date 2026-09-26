@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg-deep:#100c09;--bg-mid:#1d1611;--panel:#241b14;--ivory:#f3ecdd;--ivory-dim:#c9bba0;--gold:#e6b95c;--gold-glow:rgba(230,185,92,.35);--ok:#75ab7c;--ok-soft:rgba(117,171,124,.16);--warn:#d9663f;--warn-soft:rgba(217,102,63,.16);--line:rgba(243,236,221,.13)}
-*{box-sizing:border-box}html,body{margin:0;padding:0}body{background:radial-gradient(ellipse at 50% -10%,#2c2013,var(--bg-deep) 65%);color:var(--ivory);font-family:'Source Sans 3',sans-serif;padding:30px 16px 60px;min-height:100vh}.wrap{max-width:900px;margin:0 auto}header{text-align:center;margin-bottom:20px}.institute{font-family:'Fraunces',serif;font-size:14px;font-weight:500;color:var(--gold);letter-spacing:.4px;margin-bottom:10px}.logo{width:88px;height:88px;margin:0 auto 10px;filter:drop-shadow(0 0 18px var(--gold-glow))}h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(22px,5vw,30px);margin:0 0 4px}.sub{color:var(--ivory-dim);font-size:13.5px}.status-bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:var(--bg-mid);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:20px 0;font-size:13.5px}.status-bar .day{font-weight:700}.pill{padding:4px 12px;border-radius:14px;font-size:12.5px;font-weight:700}.pill.open{background:var(--ok-soft);color:var(--ok)}.pill.closed{background:var(--warn-soft);color:var(--warn)}.panel{background:var(--bg-mid);border:1px solid var(--line);border-radius:8px;padding:18px 16px;margin-bottom:18px}.panel-label{font-size:12px;color:var(--ivory-dim);margin-bottom:10px;letter-spacing:.3px;text-transform:uppercase}.setup-toggle{cursor:pointer;display:flex;justify-content:space-between;align-items:center}.setup-body{margin-top:14px;display:none}.setup-body.show{display:block}.setup-body p{font-size:13px;color:var(--ivory-dim);line-height:1.6;margin:0 0 12px}.conn-status{font-size:13px;margin-top:8px}.conn-status.ok{color:var(--ok)}.conn-status.warn{color:var(--warn)}.session-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.session-title{font-family:'Fraunces',serif;font-size:22px;margin:0}.session-note{color:var(--ivory-dim);font-size:13px}.btn{background:var(--gold);color:#241b14;border:none;font-weight:700;font-size:14px;padding:11px 20px;border-radius:6px;cursor:pointer}.btn:disabled{opacity:.4;cursor:not-allowed}.btn.ghost{background:transparent;color:var(--ivory);border:1px solid rgba(243,236,221,.3)}.btn.ghost:hover{border-color:var(--gold);color:var(--gold)}.btn.small{padding:7px 13px;font-size:12.5px}.btn.danger{background:transparent;color:var(--warn);border:1px solid rgba(217,102,63,.45)}.student-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.student-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px}.student-card.present{border-color:rgba(117,171,124,.45)}.student-card h3{margin:0 0 4px;font-family:'Fraunces',serif;font-size:19px}.student-meta{color:var(--ivory-dim);font-size:12.5px;margin-bottom:10px}.student-actions{display:flex;gap:8px;flex-wrap:wrap}.badge{display:inline-block;padding:3px 8px;border-radius:12px;font-size:11px;font-weight:700}.badge.regular{background:var(--gold-soft);color:var(--gold)}.badge.other{background:var(--ok-soft);color:var(--ok)}.badge.present{background:var(--ok-soft);color:var(--ok)}.lesson-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:12px}.lesson-meta{color:var(--gold);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}.lesson-title{font-family:'Fraunces',serif;font-size:21px;margin:0 0 8px}.lesson-section{margin-top:13px}.lesson-section strong{display:block;color:var(--ivory-dim);font-size:12px;text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px}.lesson-section p{margin:0;font-size:14px;line-height:1.6}.empty{color:var(--ivory-dim);padding:14px 0}.other-box{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}.search-row{display:flex;gap:8px;flex-wrap:wrap}.search-row input{flex:1;min-width:220px;background:var(--bg-deep);color:var(--ivory);border:1px solid rgba(243,236,221,.25);padding:10px 12px;border-radius:6px;font-size:14px}.search-results{margin-top:10px;display:grid;gap:8px}.search-item{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--bg-deep);border:1px solid var(--line);border-radius:6px;padding:10px}.search-item .info{font-size:13px}.search-item .info small{display:block;color:var(--ivory-dim);margin-top:2px}table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px}th{text-align:left;color:var(--ivory-dim);font-weight:600;font-size:12px;padding:8px;border-bottom:1px solid var(--line)}td{padding:9px 8px;border-bottom:1px solid rgba(243,236,221,.07)}td.muted{color:var(--ivory-dim)}.empty-row td{text-align:center;color:var(--ivory-dim);padding:20px}.top-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}footer{margin-top:20px;color:var(--ivory-dim);font-size:12px;line-height:1.6;text-align:center}
+*{box-sizing:border-box}html,body{margin:0;padding:0}body{background:radial-gradient(ellipse at 50% -10%,#2c2013,var(--bg-deep) 65%);color:var(--ivory);font-family:'Source Sans 3',sans-serif;padding:30px 16px 60px;min-height:100vh}.wrap{max-width:900px;margin:0 auto}header{text-align:center;margin-bottom:20px}.institute{font-family:'Fraunces',serif;font-size:14px;font-weight:500;color:var(--gold);letter-spacing:.4px;margin-bottom:10px}.logo{width:88px;height:88px;margin:0 auto 10px;filter:drop-shadow(0 0 18px var(--gold-glow))}h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(22px,5vw,30px);margin:0 0 4px}.sub{color:var(--ivory-dim);font-size:13.5px}.status-bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:var(--bg-mid);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:20px 0;font-size:13.5px}.status-bar .day{font-weight:700}.pill{padding:4px 12px;border-radius:14px;font-size:12.5px;font-weight:700}.pill.open{background:var(--ok-soft);color:var(--ok)}.pill.closed{background:var(--warn-soft);color:var(--warn)}.panel{background:var(--bg-mid);border:1px solid var(--line);border-radius:8px;padding:18px 16px;margin-bottom:18px}.panel-label{font-size:12px;color:var(--ivory-dim);margin-bottom:10px;letter-spacing:.3px;text-transform:uppercase}.setup-toggle{cursor:pointer;display:flex;justify-content:space-between;align-items:center}.setup-body{margin-top:14px;display:none}.setup-body.show{display:block}.setup-body p{font-size:13px;color:var(--ivory-dim);line-height:1.6;margin:0 0 12px}.conn-status{font-size:13px;margin-top:8px}.conn-status.ok{color:var(--ok)}.conn-status.warn{color:var(--warn)}.session-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.session-title{font-family:'Fraunces',serif;font-size:22px;margin:0}.session-note{color:var(--ivory-dim);font-size:13px}.btn{background:var(--gold);color:#241b14;border:none;font-weight:700;font-size:14px;padding:11px 20px;border-radius:6px;cursor:pointer}.btn:disabled{opacity:.4;cursor:not-allowed}.btn.ghost{background:transparent;color:var(--ivory);border:1px solid rgba(243,236,221,.3)}.btn.ghost:hover{border-color:var(--gold);color:var(--gold)}.btn.small{padding:7px 13px;font-size:12.5px}.btn.danger{background:transparent;color:var(--warn);border:1px solid rgba(217,102,63,.45)}.student-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.student-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px}.student-card.present{border-color:rgba(117,171,124,.45)}.student-card h3{margin:0 0 4px;font-family:'Fraunces',serif;font-size:19px}.student-meta{color:var(--ivory-dim);font-size:12.5px;margin-bottom:10px}.student-actions{display:flex;gap:8px;flex-wrap:wrap}.badge{display:inline-block;padding:3px 8px;border-radius:12px;font-size:11px;font-weight:700}.badge.regular{background:var(--gold-soft);color:var(--gold)}.badge.other{background:var(--ok-soft);color:var(--ok)}.badge.present{background:var(--ok-soft);color:var(--ok)}.lesson-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:12px}.lesson-meta{color:var(--gold);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}.lesson-title{font-family:'Fraunces',serif;font-size:21px;margin:0 0 8px}.lesson-section{margin-top:13px}.lesson-section strong{display:block;color:var(--ivory-dim);font-size:12px;text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px}.lesson-section p{margin:0;font-size:14px;line-height:1.6}.lesson-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.lesson-status{margin-top:14px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg-deep);color:var(--ivory-dim);font-size:13px}.empty{color:var(--ivory-dim);padding:14px 0}.other-box{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}.search-row{display:flex;gap:8px;flex-wrap:wrap}.search-row input{flex:1;min-width:220px;background:var(--bg-deep);color:var(--ivory);border:1px solid rgba(243,236,221,.25);padding:10px 12px;border-radius:6px;font-size:14px}.search-results{margin-top:10px;display:grid;gap:8px}.search-item{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--bg-deep);border:1px solid var(--line);border-radius:6px;padding:10px}.search-item .info{font-size:13px}.search-item .info small{display:block;color:var(--ivory-dim);margin-top:2px}table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px}th{text-align:left;color:var(--ivory-dim);font-weight:600;font-size:12px;padding:8px;border-bottom:1px solid var(--line)}td{padding:9px 8px;border-bottom:1px solid rgba(243,236,221,.07)}td.muted{color:var(--ivory-dim)}.empty-row td{text-align:center;color:var(--ivory-dim);padding:20px}.top-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}footer{margin-top:20px;color:var(--ivory-dim);font-size:12px;line-height:1.6;text-align:center}
 
 .login-overlay{position:fixed;inset:0;background:radial-gradient(ellipse at 50% -10%,#2c2013,#100c09 70%);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}.login-card{width:min(430px,100%);background:#1d1611;border:1px solid rgba(243,236,221,.15);border-radius:12px;padding:28px 22px;box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center}.login-card .login-logo{width:72px;height:72px;margin-bottom:10px}.login-card h2{font-family:'Fraunces',serif;font-weight:500;margin:0 0 6px;font-size:25px}.login-card p{color:var(--ivory-dim);font-size:13.5px;line-height:1.5;margin:0 0 18px}.login-step{display:none;text-align:left}.login-step.show{display:block}.login-label{display:block;color:var(--ivory-dim);font-size:12px;text-transform:uppercase;letter-spacing:.3px;margin:0 0 7px}.login-input{width:100%;background:var(--bg-deep);color:var(--ivory);border:1px solid rgba(243,236,221,.25);padding:12px;border-radius:6px;font-size:15px;margin-bottom:12px;outline:none}.login-input:focus{border-color:var(--gold)}.login-msg{min-height:20px;margin:10px 0;font-size:13px;color:var(--warn)}.login-msg.ok{color:var(--ok)}.login-actions{display:flex;gap:8px;flex-wrap:wrap}.login-actions .btn{flex:1}.staff-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.staff-name{color:var(--gold);font-weight:700}.logout-btn{margin-left:auto}
 </style>
@@ -118,7 +118,133 @@ function renderStudentGrid(){const grid=studentGrid;grid.innerHTML='';const list
 function studentCard(s,other){const d=document.createElement('div');d.className='student-card';const rec=findRecord(s.studentId);if(rec)d.classList.add('present');d.innerHTML=`<h3>${esc(s.studentName)}</h3><div class="student-meta">${esc(s.instrument||'')} · Regular batch: ${esc(s.batch||'')}</div><div style="margin-bottom:10px"><span class="badge ${other?'other':'regular'}">${other?'Make-up / Other batch':'Regular student'}</span>${rec?' <span class="badge present">Present</span>':''}</div><div class="student-actions">${rec?'<button class="btn ghost small" disabled>Checked In</button>':'<button class="btn small">Check In</button>'}</div>${rec&&rec.lessonHtml?rec.lessonHtml:''}`;const btn=d.querySelector('button');if(btn&&!rec)btn.onclick=()=>checkInStudent(s,other);return d}
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 async function checkInStudent(student,other){if(!backendReady){alert('Attendance system is not connected yet.');return}const info=todayInfo();if(!info.activeSession){alert('There is no active batch at this time.');return}if(findRecord(student.studentId)){alert('This student is already checked in for this session.');return}const record={date:info.dateStr,studentId:student.studentId,name:student.studentName,instrument:student.instrument,batch:student.batch,teacher:student.teacher,todayBatch:info.activeSession,timeIn:nowTimeStr(),timeOut:'',sheetRow:null,lessonHtml:''};try{const res=await fetch(BACKEND_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'checkIn',staffId:currentStaffId,token:currentStaffToken,date:record.date,studentId:record.studentId,studentName:record.name,instrument:record.instrument,regularBatch:record.batch,todayBatch:record.todayBatch,teacher:record.teacher,timeIn:record.timeIn})});const data=await res.json();if(!data.success)throw new Error(data.error||'Could not save attendance.');record.sheetRow=data.row||null;records.push(record);await loadLessonIntoRecord(record);renderStudentGrid();renderSearch();renderTable();setConnStatus('Attendance saved successfully.',true)}catch(e){console.error(e);setConnStatus('Could not save attendance. Please try again.',false);alert('Attendance could not be saved. Please try again.')}}
-async function loadLessonIntoRecord(record){try{const res=await fetch(BACKEND_URL+'?action=getCurrentLesson&token='+encodeURIComponent(currentStaffToken)+'&staffId='+encodeURIComponent(currentStaffId)+'&studentId='+encodeURIComponent(record.studentId),{cache:'no-store'});const data=await res.json();if(!data.success)throw new Error(data.error||'Lesson not found.');record.lessonHtml=`<div class="lesson-card"><div class="lesson-meta">Lesson ${esc(data.lessonNo)} · Week ${esc(data.week)} · Age ${esc(data.ageGroup)}</div><h4 class="lesson-title">${esc(data.topic||'Lesson '+data.lessonNo)}</h4><div class="lesson-section"><strong>Teacher Instructions</strong><p>${esc(data.instructions||'No instructions added.')}</p></div><div class="lesson-section"><strong>Practice</strong><p>${esc(data.practice||'No practice added.')}</p></div><div class="lesson-section"><strong>Assignment / Homework</strong><p>${esc(data.homework||'No assignment added.')}</p></div></div>`}catch(e){console.error(e);record.lessonHtml='<div class="lesson-card"><div class="lesson-meta">Current Lesson</div><p>Please refresh and try again.</p></div>'}}
+async function loadLessonIntoRecord(record){
+  try{
+    const res=await fetch(
+      BACKEND_URL+'?action=getCurrentLesson&token='+encodeURIComponent(currentStaffToken)+'&staffId='+encodeURIComponent(currentStaffId)+'&studentId='+encodeURIComponent(record.studentId),
+      {cache:'no-store'}
+    );
+    const data=await res.json();
+    if(!data.success)throw new Error(data.error||'Lesson not found.');
+
+    if(data.todayCompleted){
+      record.lessonHtml=`<div class="lesson-card">
+        <div class="lesson-meta">Lesson ${esc(data.lessonNo)} · Completed Today</div>
+        <h4 class="lesson-title">Today's lesson is completed</h4>
+        <div class="lesson-status">This lesson has already been marked completed today. The next lesson will be loaded on the student's next lesson day.</div>
+        <div class="lesson-actions">
+          <button class="btn ghost small lesson-reopen">Reopen Today's Lesson</button>
+        </div>
+      </div>`;
+      bindLessonButtons(record);
+      return;
+    }
+
+    record.currentLessonNo=Number(data.lessonNo)||0;
+    record.lessonHtml=`<div class="lesson-card">
+      <div class="lesson-meta">Lesson ${esc(data.lessonNo)} · Week ${esc(data.week)} · Age ${esc(data.ageGroup)}</div>
+      <h4 class="lesson-title">${esc(data.topic||'Lesson '+data.lessonNo)}</h4>
+      <div class="lesson-section">
+        <strong>Teacher Instructions</strong>
+        <p>${esc(data.instructions||'No instructions added.')}</p>
+      </div>
+      <div class="lesson-section">
+        <strong>Practice</strong>
+        <p>${esc(data.practice||'No practice added.')}</p>
+      </div>
+      <div class="lesson-section">
+        <strong>Assignment / Homework</strong>
+        <p>${esc(data.homework||'No assignment added.')}</p>
+      </div>
+      <div class="lesson-actions">
+        <button class="btn ghost small lesson-repeat">Repeat Lesson</button>
+        <button class="btn small lesson-complete">Lesson Completed</button>
+      </div>
+    </div>`;
+    bindLessonButtons(record);
+  }catch(e){
+    console.error(e);
+    record.lessonHtml='<div class="lesson-card"><div class="lesson-meta">Current Lesson</div><p>Please refresh and try again.</p></div>';
+  }
+}
+
+function bindLessonButtons(record){
+  const wrapper=document.createElement('div');
+  wrapper.innerHTML=record.lessonHtml;
+  const repeatBtn=wrapper.querySelector('.lesson-repeat');
+  const completeBtn=wrapper.querySelector('.lesson-complete');
+  const reopenBtn=wrapper.querySelector('.lesson-reopen');
+  if(repeatBtn)repeatBtn.onclick=()=>updateLessonProgress(record,'repeat');
+  if(completeBtn)completeBtn.onclick=()=>updateLessonProgress(record,'completed');
+  if(reopenBtn)reopenBtn.onclick=()=>reopenLesson(record);
+  record.lessonHtml=wrapper.innerHTML;
+}
+
+async function updateLessonProgress(record,status){
+  try{
+    const buttons=document.querySelectorAll('.lesson-repeat,.lesson-complete,.lesson-reopen');
+    buttons.forEach(b=>b.disabled=true);
+    const lessonNo=Number(record.currentLessonNo)||0;
+    if(!lessonNo)throw new Error('Current lesson number is missing.');
+
+    const res=await fetch(BACKEND_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({
+        action:'lessonProgress',
+        staffId:currentStaffId,
+        token:currentStaffToken,
+        studentId:record.studentId,
+        lessonNo:lessonNo,
+        lessonStatus:status
+      })
+    });
+    const data=await res.json();
+    if(!data.success)throw new Error(data.error||'Could not update lesson progress.');
+
+    await loadLessonIntoRecord(record);
+    renderStudentGrid();
+    renderSearch();
+    setConnStatus(
+      status==='completed'
+        ? 'Lesson completed successfully.'
+        : 'Lesson marked for repeat — same lesson remains current.',
+      true
+    );
+  }catch(e){
+    console.error(e);
+    setConnStatus('Could not update lesson progress. Please try again.',false);
+    alert(e.message||'Lesson progress could not be updated. Please try again.');
+  }
+}
+
+async function reopenLesson(record){
+  try{
+    const buttons=document.querySelectorAll('.lesson-repeat,.lesson-complete,.lesson-reopen');
+    buttons.forEach(b=>b.disabled=true);
+    const res=await fetch(BACKEND_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({
+        action:'reopenLesson',
+        staffId:currentStaffId,
+        token:currentStaffToken,
+        studentId:record.studentId
+      })
+    });
+    const data=await res.json();
+    if(!data.success)throw new Error(data.error||'Could not reopen today\'s lesson.');
+    await loadLessonIntoRecord(record);
+    renderStudentGrid();
+    renderSearch();
+    setConnStatus('Today\'s lesson reopened.',true);
+  }catch(e){
+    console.error(e);
+    setConnStatus('Could not reopen today\'s lesson.',false);
+    alert(e.message||'Could not reopen today\'s lesson.');
+  }
+}
+
 function renderSearch(){const q=otherSearch.value.trim().toLowerCase();searchResults.innerHTML='';if(!q)return;const currentIds=new Set(selectedRegularStudents().map(s=>s.studentId));const matches=students.filter(s=>String(s.status).toLowerCase()!=='inactive'&&!currentIds.has(s.studentId)&&s.studentName.toLowerCase().includes(q)).sort((a,b)=>a.studentName.localeCompare(b.studentName));if(!matches.length){searchResults.innerHTML='<div class="empty">No other active student found.</div>';return}matches.slice(0,10).forEach(s=>{const rec=findRecord(s.studentId);const item=document.createElement('div');item.className='search-item';item.innerHTML=`<div style="width:100%"><div class="info"><strong>${esc(s.studentName)}</strong><small>Regular batch: ${esc(s.batch)} · ${esc(s.instrument)}</small></div><div style="margin-top:8px">${rec?'<span class="badge present">Already present</span>':'<button class="btn small">Add & Check In</button>'}</div>${rec&&rec.lessonHtml?rec.lessonHtml:''}</div>`;const b=item.querySelector('button');if(b)b.onclick=()=>checkInStudent(s,true);searchResults.appendChild(item)})}
 function renderTable(){tableBody.innerHTML='';if(!records.length){tableBody.innerHTML='<tr class="empty-row"><td colspan="6">No attendance logged yet today.</td></tr>';return}records.forEach((r,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${esc(r.name)}</td><td>${esc(r.batch)}</td><td>${esc(r.todayBatch)}</td><td>${esc(r.timeIn)}</td><td class="${r.timeOut?'':'muted'}">${esc(r.timeOut||'—')}</td><td>${r.timeOut?'':`<button class="btn ghost small" data-i="${i}">Check Out</button>`}</td>`;tableBody.appendChild(tr)});tableBody.querySelectorAll('button[data-i]').forEach(b=>b.onclick=()=>checkOut(+b.dataset.i))}
 async function checkOut(i){const r=records[i];if(!r)return;try{const timeOut=nowTimeStr();const res=await fetch(BACKEND_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'checkOut',staffId:currentStaffId,token:currentStaffToken,sheetRow:r.sheetRow,timeOut})});const data=await res.json();if(!data.success)throw new Error(data.error||'Could not save check out.');r.timeOut=timeOut;renderTable();setConnStatus('Check out saved successfully.',true)}catch(e){console.error(e);alert('Check out could not be saved. Please try again.')}}
